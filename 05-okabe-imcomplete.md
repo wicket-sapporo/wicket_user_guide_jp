@@ -1,0 +1,261 @@
+- Authors: Andrea Del Bene, Martin Grigorov, Carsten Hufe, Christian Kroemer, Daniel Bartl, Paul Bor
+- Translators: Hiroto Yamakawa, Masaki Okabe
+- Version: 6.x
+- Original: http://wicket.apache.org/guide/guide/helloWorld.html
+
+# 5. Wicketがレイアウトを管理する
+
+次のトピックに行く前に、Wicketとそれ自身のコンポーネント志向をベースとした機能を用いて、あなたのウェブサイトのレイアウトをどのように横断的にメンテナンスをするのか見ていく。そのために一度、Wicketから離れよう。おそらく嫌な顔をする人がいるかもしれないが、実際に手を動かしてコードを書いてみることは、単純だが一番の近道になるだろう。
+
+## 5.1 レイアウトの基本要素
+
+インターネットが未だ一握りの人しか扱えず、ブラウザによって映し出されたプレーンなHTMLが衝撃的な影響を与えていた90年代、私たちはHTMLタグでWebページの構築を行っていた。数年後、このタグは殆ど使われなくなり、JavaDocなどのごく少数の特定のドメインでしか見かけることがなくなった。
+
+`JSP`, `ASP`, もしくは`PHP`などのサーバーサイドの技術によって、`<frame>`タグは使われなくなり、レイアウトを汎用的なエリアに分けてページを構成するテンプレートベースの開発手法に変化した。
+
+このチャプターではWicketを使ってサイトのレイアウトを構成する方法を学ぶ。サンプルとして用いるのは以下の構成要素からなるレイアウトだ。
+
+* ヘッダー：サイトタイトルやロゴ、ナビゲーションバーを持つ
+* 左メニュー：他ページや他機能へのリンクを持つ
+* フッター：管理人のメールアドレスや企業の住所などのサイトの総括的な情報を持つ
+* コンテンツ：ページの中心的な情報や機能を持つ
+
+画像にすると以下のようになる。
+
+![alt](https://wicket.apache.org/guide/img/layout.png)
+
+ページレイアウトを構成した次は、サイトのテーマを決め、モックアップを作成しよう。以下の画像は、完成したモックアップに各エリアの名前を明記したものである。
+
+![alt](https://wicket.apache.org/guide/img/layout-mock.png)
+
+
+## 5.2 これが継承だ！
+レイアウトに一貫性のWebサイトを作りたい、という要求は、HTMLの致命的な限界をさらけ出した。それは、webページにもマークアップにも継承を行う術がないことだ。一度レイアウトを作った後、他のページでも同じものを使い回せるとしたら、素晴らしくはないだろうか。Wicketが目指しているものの一つは、これまでの限界を克服することだ。
+
+**マークアップの継承**
+これまでの章で見てきたように、WicketのページクラスはJavaクラスで出来ている。そのため、親となるページクラスを継承し、サブクラスとなるページクラスを作ることができる。しかし、Wicketの継承はそれだけに留まらない。親クラスのHTMLファイルも継承出来るのだ。
+あるクラスがWebPageクラスを継承する時、それは親クラスのHTMLファイルも継承することになる。これはマークアップ継承と呼ばれる。この概念を理解するために、次の例を見ていこう。GenericSitePageクラスとGenericSitePage.htmlから成るページがあるとする。このページを継承してオンラインで商品の支払いを行う`OrderCheckOutPage`クラスを作成した。この時、対応するhtmlファイルを作成しない場合、`OrderCheckOutPage`クラスは`GenericSitePage.html`を自身のhtmlファイルとして使用することになる。
+
+![alt](https://wicket.apache.org/guide/img/markup-inheritance.png)
+
+マークアップ継承を使えば、全てのページがサイトレイアウトに準じているかどうか確認する手間が省け、ページレイアウトの管理に役立つ。しかしながら、この恩恵を全て受け入れるためには、マークアップ継承を構成するためのもう一つの重要なコンポーネントを学ばなくてはならない。それは *Panel* だ。
+
+**Panel クラス**
+*Panel*クラス（*org.apache.wicket.markup.html.panel.Panel*）は、GUIを形成するソースコードとhtmlマークアップを。。。
+
+## 5.3 分けてまとめる
+5.1節で上げたレイアウトのサンプルを見なおしてみよう。サンプルでは、レイアウトをどのページでも使用する汎用的なエリアに分けた。
+さて次は,テンプレートベースのウェブアプリケーションを構築するために、再利用可能なテンプレートページを作りはじめよう。新たなサンプルコードはMarkupInheritanceExampleプロジェクトにある。
+
+**パネルとレイアウトエリア**
+コンテンツエリアを除いたレイアウトエリアそれぞれをパネル化するところから始めよう。ヘッダーエリアを例とすると、
+![alt](https://wicket.apache.org/guide/img/header-area.png)
+*HeaderPanel*という名前のパネルを、*HeaderPanel.html*として以下のように作ることができる。
+
+```HTML:HeaderPanel.html
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+…
+</head>
+<body>
+   <wicket:panel>
+      <table width="100%" style="border: 0px none;">
+      <tbody>
+    <tr>
+    <td>
+       <img alt="Jug4Tenda" src="wicketLayout_files/logo_jug4tenda.gif">
+     </td>
+      <td>
+    <h1>Gestione Anagrafica</h1>
+   </td>   
+      </tr>
+      </tbody>
+      </table>   
+   </wicket:panel>
+</body>
+<html>
+```
+
+このパネルのJavaクラスは、その名の通り*Panelクラス*を継承する必要がある。
+
+```Java:HeaderPanel.java
+package helloWorld.layoutTenda;
+import org.apache.wicket.markup.html.panel.Panel;
+
+public class HeaderPanel extends Panel {
+public HeaderPanel(String id) {
+	super(id);
+	}
+}
+```
+レイアウトエリアひとつに対してひとつのパネルを上記のように作る。最終的には下記のパネルが出来上がるはずだ。
+
+* *HeaderPanel*(ヘッダー)
+* *FooterPanel*(フッター)
+* *MenuPanel*(メニュー)
+
+コンテンツエリアはページごとに異なるはずなので、パネル化する必要は無い。
+
+**テンプレートとなるページ**
+さて、たった今作ったパネル達を使って、包括的なテンプレートページを作りはじめよう。HTMLファイルは驚くほどシンプルになる。
+
+```
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+…
+<!--Include CSS-->
+…
+</head>
+<body>
+<div id="header" wicket:id="headerPanel">header</div>
+<div id="body">
+	<div id="menu" wicket:id="menuPanel">menu</div>
+	<div id="content" wicket:id="contentComponent">content</div>
+</div>
+<div id="footer" wicket:id="footerPanel">footer</div>
+</body>
+</html>
+```
+
+このHTMLコードは、汎用的な左メニューのレイアウトを提供する。対応するエリアの入れ物となっている4つの*divタグ*があることを心に留めておいて欲しい。このページの*Javaクラス*は、ページとパネルを組み合わせるコードを含んでいる。
+
+```Java:
+package helloWorld.layoutTenda;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.basic.Label;
+
+public class JugTemplate extends WebPage {
+	public static final String CONTENT_ID = "contentComponent";
+
+	private Component headerPanel;
+	private Component menuPanel;
+	private Component footerPanel;
+
+              public JugTemplate(){
+		add(headerPanel = new HeaderPanel("headerPanel"));
+		add(menuPanel = new MenuPanel("menuPanel"));
+		add(footerPanel = new FooterPanel("footerPanel"));
+		add(new Label(CONTENT_ID, "Put your content here"));
+	}
+
+             //getters for layout areas
+       //… 
+}
+```
+さあ、これでテンプレートページを使う準備が整った！これ以降作成する全てのページをこのテンプレートページを親とするサブクラスとして作ることで、レイアウトを引き継ぐことが出来る。上記のラベルコンポーネントの部分を自由なコンテンツに置き換えさえすればいい。
+
+**仕上げに**
+ここまでを踏まえて、ログインページ(*SimpleLoginPage*) を作成しよう。まずはじめに、ログインフォームとなるパネル（*LoginPanel*）が必要だ。このパネルをコンテンツエリアに配置する。HTMLファイルは以下のようになる。
+
+```
+<html>
+<head>
+</head>
+<body>
+   <wicket:panel>
+    <div style="margin: auto; width: 40%;">
+       <form  id="loginForm" method="get">
+         <fieldset id="login" class="center">
+            <legend >Login</legend>               
+            <span >Username: </span><input type="text" id="username"/><br/>                                                                  
+            <span >Password: </span><input type="password" id="password" />
+            <p>
+               <input type="submit" name="login" value="login"/>
+            </p>
+         </fieldset>
+      </form>
+    </div>   
+   </wicket:panel>
+</body>
+</html>
+```
+このパネルのJavaクラスは、パネルクラスを継承するだけだ。ここで作るフォームパネルは実際には動作しないものである。Wicketにおけるフォームの使い方は11章と12章で説明する。これはログインページなので、左メニューを表示する必要は無い。難しい事ではない。コンポーネントクラスには、*setVisible*メソッドが存在し、コンポーネント自身とコンポーネントにアドされた子コンポーネントの表示・非表示を切り替える事が出来るからだ。
+
+ログインページに、以下の様なJavaコードとなる。
+
+```
+package helloWorld.layoutTenda;
+import helloWorld.LoginPanel;
+import org.apache.wicket.event.Broadcast;
+import org.apache.wicket.event.IEventSink;
+public class SimpleLoginPage extends JugTemplate {
+	public SimpleLoginPage(){
+		super();		
+		replace(new LoginPanel(CONTENT_ID));
+		getMenuPanel().setVisible(false);
+	}
+}
+```
+HTMLファイルの説明を省いたが、最終的には以下のページが出来上がる。
+![alt](https://wicket.apache.org/guide/img/final-login-page.png)
+
+## 5.4 wicket:extend を用いたマークアップの継承
+Wicketでは*<wicket:child>*タグを用いてマークアップの継承を行うことが出来る。親マークアップ内にこのタグを宣言することで、子となるページもしくはパネルのマークアップを挿入する位置が定義される。*<wicket:child>*を持つ親ページの例は以下のようになる。
+
+```
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+</head>
+<body>
+	This is parent body!
+	<wicket:child/>
+</body>
+</html>
+```
+子ページもしくは子パネルのマークアップは*<wicket:extend>*タグの中になければならない。*<wicket:extend>*の中にあるマークアップだけが使用される。子ページのマークアップは以下のようになる。
+
+```
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+</head>
+<body>
+    <wicket:extend>
+          This is child body!
+	</wicket:extend>
+</body>
+</html>
+```
+
+上の2つの例をまとめると、最終的に子ページとして生成されるマークアップは以下のようになる。
+
+```
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+	This is parent body!
+	<wicket:child>
+       <wicket:extend>
+           This is child body!
+	   </wicket:extend>
+    </wicket:child>
+</body>
+</html>
+```
+
+**テンプレートページを見直す**
+*<wicket:child>*タグを5.3で作成したテンプレートページに用いると、以下の様になる。
+
+```
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+</head>
+<body>
+<div id="header" wicket:id="headerPanel">header</div>
+<div id="body">
+	<div id="menu" wicket:id="menuPanel">menu</div>
+	<wicket:child/>
+</div>
+<div id="footer" wicket:id="footerPanel">footer</div>
+</body>
+</html>
+```
+コンテンツエリアとして用意していた*<div>*タグを*<wicket:child>*タグに置き換えた。
+## 5.5 まとめ
