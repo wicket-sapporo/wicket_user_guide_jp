@@ -41,7 +41,12 @@
 マークアップ継承を使えば、全てのページがサイトレイアウトに準じているかどうか確認する手間が省け、ページレイアウトの管理に役立つ。しかしながら、この恩恵を全て受け入れるためには、マークアップ継承を構成するためのもう一つの重要なコンポーネントを学ばなくてはならない。それは *Panel* だ。
 
 **Panel クラス**
-*Panel*クラス（*org.apache.wicket.markup.html.panel.Panel*）は、GUIを形成するソースコードとhtmlマークアップを。。。
+*Panel*クラス（*org.apache.wicket.markup.html.panel.Panel*）は、GUIを形成するソースコードとhtmlマークアップを異なるページや異なるwebアプリケーションで再利用することができる特別なコンポーネントで、*WebPage*クラスと同じく*org.apache.wicket.MarkupContainer*を継承しています。
+
+![alt](https://wicket.apache.org/guide/img/page-panel-hierarchy.png)
+図：*WebPage*と*Panel*のクラス図
+
+
 
 ## 5.3 分けてまとめる
 5.1節で上げたレイアウトのサンプルを見なおしてみよう。サンプルでは、レイアウトをどのページでも使用する汎用的なエリアに分けた。
@@ -259,3 +264,12 @@ Wicketでは*<wicket:child>*タグを用いてマークアップの継承を行�
 ```
 コンテンツエリアとして用意していた*<div>*タグを*<wicket:child>*タグに置き換えた。
 ## 5.5 まとめ
+
+>:no_entry_sign:
+>:warning:
+
+```java
+```
+```xml
+```
+*図：W*
