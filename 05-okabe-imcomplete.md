@@ -5,7 +5,7 @@
 
 # 5. Wicketがレイアウトを管理する
 
-次のトピックに行く前に、Wicketとそれ自身のコンポーネント志向をベースとした機能を用いて、あなたのウェブサイトのレイアウトをどのように横断的にメンテナンスをするのか見ていく。そのために一度、Wicketから離れよう。おそらく嫌な顔をする人がいるかもしれないが、実際に手を動かしてコードを書いてみることは、単純だが一番の近道になるだろう。
+この章では、Wicketのコンポーネント志向をベースとした機能を用いて、一貫性のあるレイアウトを維持する方法を見ていく。そのために一度、Wicketから離れよう。おそらく嫌な顔をする人がいるかもしれないが、実際に手を動かしてコードを書いてみることは、単純だが一番の近道になるだろう。
 
 ## 5.1 レイアウトの基本要素
 
@@ -22,31 +22,38 @@
 
 画像にすると以下のようになる。
 
-![alt](https://wicket.apache.org/guide/img/layout.png)
+![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/layout.png)
 
 ページレイアウトを構成した次は、サイトのテーマを決め、モックアップを作成しよう。以下の画像は、完成したモックアップに各エリアの名前を明記したものである。
 
-![alt](https://wicket.apache.org/guide/img/layout-mock.png)
+![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/layout-mock.png)
 
+さて、サイト全体が一貫性のあるレイアウトを持つためには、各ページが上記のレイアウトをしていなくてはならない。以前のテンプレートベースの方法では、全てのページに手作業で各エリアを入力する必要がある。JSPを使うならば、おそらく`include`ディレクティブの使用に行き着くだろうが、その場合でもエリアごとの`include`を記述する必要がある(コンテンツ以外)。
+
+![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/layout-include.png)
+
+> :warning: 内容を簡潔にするために`include`するエリアは静的なHTMLとする。
+
+それでは、Wicketを使ってレイアウトを扱う方法を見ていきましょう。
 
 ## 5.2 継承がやってきた！
-レイアウトに一貫性のあるWebサイトを作りたい、という要求は、HTMLの致命的な限界をさらけ出した。それは、webページにもマークアップにも継承を行う術がないことだ。一度レイアウトを作った後、他のページでも同じものを使い回せるとしたら、素晴らしくはないだろうか。Wicketが目指しているものの一つは、これまでの限界を克服することだ。
+レイアウトに一貫性のあるWebサイトを作りたい、という要求は、HTMLの致命的な限界をさらけ出した。それは、webページにもマークアップにも継承を行う術がないことだ。一度レイアウトを作った後、他のページでも同じものを使い回せるとしたら、素晴らしくはないだろうか。Wicketが目指しているものの一つは、これまでの限界を超越することだ。
 
 **マークアップの継承**
 これまでの章で見てきたように、WicketのページクラスはJavaクラスで出来ている。そのため、親となるページクラスを継承し、サブクラスとなるページクラスを作ることができる。しかし、Wicketの継承はそれだけに留まらない。親クラスのHTMLファイルも継承出来るのだ。
-あるクラスが*WebPage*クラスを継承する時、それは親クラスのHTMLファイルも継承することになる。これはマークアップ継承と呼ばれる。この概念を理解するために、次の例を見ていこう。*GenericSitePage*クラスとGenericSitePage.htmlから成るページがあるとする。このページを継承してオンラインで商品の支払いを行う*OrderCheckOutPage*クラスを作成した。この時、対応するhtmlファイルを作成しない場合、*OrderCheckOutPage*クラスはGenericSitePage.htmlを自身のhtmlファイルとして使用することになる。
+あるクラスが*WebPage*クラスを継承する時、それは親クラスのHTMLファイルも継承することになる。これはマークアップ継承と呼ばれる。この概念を理解するために、次の例を見ていこう。*GenericSitePage*クラスとGenericSitePage.htmlから成るページがあるとする。このページを継承してオンラインで商品の支払いを行う*OrderCheckOutPage*クラスを作成した。この時、対応するhtmlファイルを作成しない場合、*OrderCheckOutPage*クラスはGenericSitePage.htmlを自身のHTMLファイルとして使用することになる。
 
-![alt](https://wicket.apache.org/guide/img/markup-inheritance.png)
+![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/markup-inheritance.png)
 
 マークアップ継承を使えば、全てのページがサイトレイアウトに準じているかどうか確認する手間が省け、ページレイアウトの管理に役立つ。しかしながら、この恩恵を全て受け入れるためには、マークアップ継承を構成するためのもう一つの重要なコンポーネントを学ばなくてはならない。それは *Panel* だ。
+
+> :no_entry_sign: もし作成したページクラス、もしくは継承元の親クラスと同名のHTMLファイルが無い場合や、使用するHTMLファイルが指定されていない場合は、例外 `MarkupNotFoundException`が投げられる。
 
 **Panel クラス**
 *Panel*クラス（*org.apache.wicket.markup.html.panel.Panel*）は、GUIを形成するソースコードとhtmlマークアップを異なるページや異なるwebアプリケーションで再利用することができる特別なコンポーネントで、*WebPage*クラスと同じく*org.apache.wicket.MarkupContainer*を継承している。
 
-![alt](https://wicket.apache.org/guide/img/page-panel-hierarchy.png)
+![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/page-panel-hierarchy.png)
 図：*WebPage*と*Panel*のクラス図
-
-
 
 ## 5.3 分けて束ねる
 5.1節で上げたレイアウトのサンプルでは、レイアウトをどのページでも使用する汎用的なエリアに分けた。
@@ -54,7 +61,7 @@
 
 **パネルとレイアウトエリア**
 コンテンツエリアを除いたレイアウトエリアそれぞれをパネル化するところから始めよう。ヘッダーエリアを例とすると、
-![alt](https://wicket.apache.org/guide/img/header-area.png)
+![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/header-area.png)
 *HeaderPanel*という名前のパネルを、HeaderPanel.htmlとして以下のように作ることができる。
 
 ```HTML:HeaderPanel.html
@@ -195,7 +202,7 @@ public class SimpleLoginPage extends JugTemplate {
 }
 ```
 HTMLファイルを作成しなくても、最終的に以下のページが出来上がる。
-![alt](https://wicket.apache.org/guide/img/final-login-page.png)
+![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/final-login-page.png)
 
 ## 5.4 wicket:extend を用いたマークアップの継承
 Wicketでは*<wicket:child>*タグを用いてマークアップの継承を行うことが出来る。親マークアップ内にこのタグを宣言することで、子となるページもしくはパネルのマークアップを**挿入**する位置を定義できる。*<wicket:child>*を持つ親ページの例は以下のようになる。
@@ -263,6 +270,7 @@ Wicketでは*<wicket:child>*タグを用いてマークアップの継承を行�
 </html>
 ```
 コンテンツエリアとして用意していた*<div>*タグを*<wicket:child>*タグに置き換えた。このテンプレートを使ってログインページ(*SimpleLoginPage*) を作る場合、HTMLは以下のようになる。
+
 ```
 <html>
 <head>
