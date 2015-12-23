@@ -53,7 +53,6 @@
 *Panel*クラス（*org.apache.wicket.markup.html.panel.Panel*）は、GUIを形成するソースコードとhtmlマークアップを異なるページや異なるwebアプリケーションで再利用することができる特別なコンポーネントで、*WebPage*クラスと同じく*org.apache.wicket.MarkupContainer*を継承している。
 
 ![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/page-panel-hierarchy.png)
-図：*WebPage*と*Panel*のクラス図
 
 ## 5.3 分けて束ねる
 5.1節で上げたレイアウトのサンプルでは、レイアウトをどのページでも使用する汎用的なエリアに分けた。
@@ -61,7 +60,9 @@
 
 **パネルとレイアウトエリア**
 コンテンツエリアを除いたレイアウトエリアそれぞれをパネル化するところから始めよう。ヘッダーエリアを例とすると、
+
 ![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/header-area.png)
+
 *HeaderPanel*という名前のパネルを、HeaderPanel.htmlとして以下のように作ることができる。
 
 ```HTML:HeaderPanel.html
@@ -110,6 +111,7 @@ public HeaderPanel(String id) {
 コンテンツエリアはページごとに異なるはずなので、パネル化する必要は無い。
 
 **テンプレートとなるページ**
+
 さて、たった今作ったパネル達を使ってテンプレートページを作りはじめよう。HTMLファイルは驚くほどシンプルになる。
 
 ```
@@ -202,6 +204,7 @@ public class SimpleLoginPage extends JugTemplate {
 }
 ```
 HTMLファイルを作成しなくても、最終的に以下のページが出来上がる。
+
 ![alt](https://ci.apache.org/projects/wicket/guide/6.x/img/final-login-page.png)
 
 ## 5.4 wicket:extend を用いたマークアップの継承
@@ -218,6 +221,7 @@ Wicketでは*<wicket:child>*タグを用いてマークアップの継承を行�
 </body>
 </html>
 ```
+
 子ページもしくは子パネルのマークアップは*<wicket:extend>*タグの中になければならない。*<wicket:extend>*の中にあるマークアップだけが使用される。子ページのマークアップは以下のようになる。
 
 ```
@@ -252,6 +256,7 @@ Wicketでは*<wicket:child>*タグを用いてマークアップの継承を行�
 ```
 
 **テンプレートページを見直す**
+
 *<wicket:child>*タグを5.3で作成したテンプレートページに用いると、以下のようになる。
 
 ```
@@ -293,6 +298,7 @@ Wicketでは*<wicket:child>*タグを用いてマークアップの継承を行�
 </body>
 </html>
 ```
+
 この方法をとれば、*LoginPanel*のような専用のパネルを作る必要は無くなる。上位層のGUIを操作する必要の無い場合に有効な方法だ。
 
 ## 5.5 まとめ
