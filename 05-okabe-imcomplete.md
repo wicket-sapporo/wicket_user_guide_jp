@@ -1,12 +1,12 @@
 - Authors: Andrea Del Bene, Martin Grigorov, Carsten Hufe, Christian Kroemer, Daniel Bartl, Paul Borș, Tobias Soloschenko, Igor Vaynberg , Joachim Rohde
 - Translators: Hiroto Yamakawa, Masaki Okabe
-- Version: 8.x 
+- Version: 8.x
 - Original: https://ci.apache.org/projects/wicket/guide/8.x/guide/layout.html
 
 
 # 5. Wicketがレイアウトを管理する
 
-この章では、Wicketのコンポーネント志向をベースとした機能を用いて、一貫性のあるレイアウトを維持する方法を見ていく。そのために一度、Wicketから離れよう。おそらく嫌な顔をする人がいるかもしれないが、実際に手を動かしてコードを書いてみることは、単純だが一番の近道になるだろう。
+より発展的なトピックに行く前に、Wicketのコンポーネント志向をベースとした機能を用いて、一貫性のあるレイアウトを維持する方法を見ていく。恐らくこれはWicketを使う上で最も面白い使用方法ではないが、とてもシンプルなのでWicketのコードに慣れるためには一番の方法だろう。
 
 ## 5.1 レイアウトの基本要素
 
