@@ -1,7 +1,8 @@
-- Authors: Andrea Del Bene, Martin Grigorov, Carsten Hufe, Christian Kroemer, Daniel Bartl, Paul Bor
+- Authors: Andrea Del Bene, Martin Grigorov, Carsten Hufe, Christian Kroemer, Daniel Bartl, Paul Borș, Tobias Soloschenko, Igor Vaynberg , Joachim Rohde
 - Translators: Hiroto Yamakawa, Masaki Okabe
-- Version: 6.x
-- Original: http://wicket.apache.org/guide/guide/helloWorld.html
+- Version: 8.x 
+- Original: https://ci.apache.org/projects/wicket/guide/8.x/guide/layout.html
+
 
 # 5. Wicketがレイアウトを管理する
 
